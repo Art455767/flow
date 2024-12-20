@@ -28,7 +28,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(body.toEntity())
+            dao.insert(body.map { it.copy(isNew = true) }.toEntity())
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -79,5 +79,9 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun likeById(id: Long) {
         // TODO: Реализовать метод
+    }
+
+    override suspend fun markAllAsShown() {
+        dao.markAllAsShown()
     }
 }

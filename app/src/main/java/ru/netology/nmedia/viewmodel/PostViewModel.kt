@@ -105,15 +105,23 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun removeById(id: Long) {
-        fun removeById(id: Long) {
-            viewModelScope.launch {
-                try {
-                    repository.removeById(id)
+        viewModelScope.launch {
+            try {
+                repository.removeById(id)
+                loadPosts()
+            } catch (e: Exception) {
+                _dataState.value = FeedModelState(error = true)
+            }
+        }
+    }
 
-                    loadPosts()
-                } catch (e: Exception) {
-                    _dataState.value = FeedModelState(error = true)
-                }
+    fun markAllAsShown() {
+        viewModelScope.launch {
+            try {
+                repository.markAllAsShown()
+                loadPosts()
+            } catch (e: Exception) {
+                _dataState.value = FeedModelState(error = true)
             }
         }
     }
