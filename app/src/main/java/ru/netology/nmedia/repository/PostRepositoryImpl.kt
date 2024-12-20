@@ -28,7 +28,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(body.map { it.copy(isNew = true) }.toEntity())
+            dao.insert(body.toEntity())
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -49,7 +49,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 dao.countById(post.id) == 0
             }
             if (newPosts.isNotEmpty()) {
-                dao.insert(newPosts.toEntity())
+                dao.insert(newPosts.map { it.copy(isNew = true) }.toEntity())
                 emit(newPosts.size)
             }
         }
