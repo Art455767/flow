@@ -49,7 +49,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 dao.countById(post.id) == 0
             }
             if (newPosts.isNotEmpty()) {
-                dao.insert(newPosts.map { it.copy(isNew = true) }.toEntity())
+                dao.insert(newPosts.map { PostEntity.fromDto(it, isNew = true) })
                 emit(newPosts.size)
             }
         }

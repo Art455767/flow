@@ -33,4 +33,7 @@ interface PostDao {
     @Query("UPDATE PostEntity SET isNew = 0")
     suspend fun markAllAsShown()
 
+    @Query("SELECT COUNT(*) FROM PostEntity WHERE isNew = 1")
+    suspend fun countNewPosts(): Int
+
 }
