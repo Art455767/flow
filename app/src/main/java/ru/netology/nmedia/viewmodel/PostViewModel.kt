@@ -38,11 +38,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
+
+    // MutableLiveData для количества новых постов
+    private val _newPostsCount = MutableLiveData<Int>()
+    val newPostsCount: LiveData<Int> get() = _newPostsCount
 
     val newerCount: LiveData<Int> = data.switchMap { feedModel ->
         repository.getNewerCount(feedModel.posts.firstOrNull()?.id ?: 0L)
@@ -51,12 +54,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadPosts()
+
     }
+
 
     fun loadPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
-            repository.getAll()
+            repository.getAll() // Здесь вы можете вызывать метод getAll, если он возвращает Flow
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
